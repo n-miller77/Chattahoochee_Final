@@ -113,3 +113,60 @@ echo "Done."
 
 
 ####then, move files of the same MAG into its own directory and run:
+#!/bin/bash
+#SBATCH -J tad80
+#SBATCH -A gts-ktk3-coda20
+#SBATCH -n 10
+#SBATCH --mem=100G
+#SBATCH -t8:00:00
+#SBATCH -q inferno
+#SBATCH --array=1-190%45
+#SBATCH -o logs/tad80_%A_%a.out
+
+
+#### Download metaG ####
+eval "$(conda shell.bash hook)"
+conda activate roth_env
+
+
+
+PARENT_DIR="/storage/home/hcoda1/9/nmiller304/shared_project/Chattahooche-samples-work/concat_samples/tad80_attempt/output/Dereplicated/filter1/dereplicated_genomes/blast_out/Chattahoochee"
+
+FASTA_DIR="/storage/home/hcoda1/9/nmiller304/shared_project/Chattahooche-samples-work/concat_samples/tad80_attempt/output/Dereplicated/filter1/dereplicated_genomes"
+
+# Get the sample ID for this array task
+SAMPLE=$(sed -n "${SLURM_ARRAY_TASK_ID}p" sample_ids2.txt)
+
+# Construct paths
+B_DIR="${PARENT_DIR}/${SAMPLE}"
+FASTA="${FASTA_DIR}/${SAMPLE}.fasta"
+OUT_DIR="${PARENT_DIR}/${SAMPLE}_results_attempt2"
+
+# Ensure output dir exists
+mkdir -p "$OUT_DIR"
+
+# Check input BLAST directory
+if [[ ! -d "$B_DIR" ]]; then
+  echo "❌ Error: Input BLAST directory $B_DIR does not exist."
+  exit 1
+fi
+
+# Check input FASTA file
+if [[ ! -f "$FASTA" ]]; then
+  echo "❌ Error: Input FASTA file $FASTA not found."
+  exit 1
+fi
+
+# Log info
+echo "✅ Running sample: $SAMPLE"
+echo "📂 Input BLAST dir: $B_DIR"
+echo "📄 FASTA file: $FASTA"
+echo "📁 Output dir: $OUT_DIR"
+
+# Run the script
+python3 "/storage/home/hcoda1/9/nmiller304/shared_project/Metagenomic_Population_Tracking/06f_TabBlast_RecPlot_Mini_Auto_v4_edit.py" \
+  -f "$FASTA" \
+  -b "$B_DIR" \
+  -o "$OUT_DIR" \
+  -t 0 \
+  -d
