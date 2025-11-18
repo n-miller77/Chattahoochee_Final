@@ -94,7 +94,7 @@ p <- ggplot(combined_df, aes(x = Location, y = Percent_Abundance, fill = Class))
   )
 
 # === STEP 6: Save ===
-output_file <- "MAG_distribution_Origins2.pdf"
+output_file <- "MAG_distribution_Origins3.pdf"
 cat("💾 Saving combined plot:", output_file, "\n")
 ggsave(output_file, plot = p, width = 10, height = 10)
 
