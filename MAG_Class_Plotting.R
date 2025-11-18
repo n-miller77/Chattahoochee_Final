@@ -7,9 +7,9 @@ library(readr)
 
 # === STEP 1: Define file list (3 periods) ===
 files <- c(
-  "Period1_origins.csv",
-  "Period2_origins.csv",
-  "Period3_origins.csv"
+  "Period1_origins2.csv",
+  "Period2_origins2.csv",
+  "Period3_origins2.csv"
 )
 names(files) <- c("Period 1", "Period 2", "Period 3")
 
@@ -94,7 +94,7 @@ p <- ggplot(combined_df, aes(x = Location, y = Percent_Abundance, fill = Class))
   )
 
 # === STEP 6: Save ===
-output_file <- "MAG_distribution_Origins.pdf"
+output_file <- "MAG_distribution_Origins2.pdf"
 cat("💾 Saving combined plot:", output_file, "\n")
 ggsave(output_file, plot = p, width = 10, height = 10)
 
