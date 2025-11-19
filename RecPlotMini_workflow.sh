@@ -14,11 +14,12 @@
 
         
 # Loop through all subdirectories
+# if just one subdirectory, then remove the for loop and can also remove the next two sections and instead just manually make the filtered output file in the last part. 
 for dir in */ ; do
-    # Look for a .blast.tsv file in the subdirectory
+    # Find the.blast.tsv file in the subdirectory
     blast_file=$(find "$dir" -maxdepth 1 -type f -name "*.blast.tsv")
 
-    # If a blast file exists, process it
+    # Makes sure the blast file exist 
     if [[ -n "$blast_file" ]]; then
         # Create output filename: insert _filtered before .blast.tsv
         filtered_file="${blast_file%.blast.tsv}_filtered.blast.tsv"
@@ -57,7 +58,7 @@ for dir in */ ; do
         echo "Selecting best hits for: $filtered_file"
         echo "Output:                  $besthit_file"
 
-        # Select best hit per query (highest bitscore, column 12)
+        # Select best hit per contig (highest bitscore, column 12)
         awk '
         {
             qid = $1; bits = $12
