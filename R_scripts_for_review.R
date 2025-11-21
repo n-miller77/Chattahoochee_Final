@@ -107,6 +107,66 @@ cat("✅ Plot saved with custom location order and pastel colors.\n")
 
 
 
+# Load required libraries
+library(ggplot2)
+library(gridExtra)
+
+# List your 3 file names
+file_list <- c("NarG_Period1.tsv", "NarG_Period1.tsv", "NarG_Period2.tsv")
+
+# Choose a single pastel color for the bars
+bar_color <- "#77DD77"   # pastel green (change if you want)
+
+# ---------- Determine global y-axis range ----------
+max_vals <- numeric(length(file_list))
+
+for (i in seq_along(file_list)) {
+  df <- read.table(file_list[i], header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+  max_vals[i] <- max(df$Abundance, na.rm = TRUE)
+}
+
+global_ymax <- max(max_vals) * 1.1   # 10% padding
+
+# ---------- Create plots ----------
+plot_list <- list()
+
+for (i in seq_along(file_list)) {
+
+  df <- read.table(file_list[i], header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+
+  p <- ggplot(df, aes(x = Sample, y = Abundance)) +
+    geom_col(fill = bar_color) +
+    ylim(0, global_ymax) +
+    labs(title = paste("Abundance:", file_list[i]),
+         x = "Sample",
+         y = "Abundance") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+  plot_list[[i]] <- p
+}
+
+# ---------- Save all three plots together ----------
+
+# Save PNG
+png("combined_abundance_plots.png", width = 12, height = 10, units = "in", res = 300)
+grid.arrange(grobs = plot_list, ncol = 1)
+dev.off()
+
+# Save PDF (optional)
+pdf("combined_abundance_plots.pdf", width = 12, height = 10)
+grid.arrange(grobs = plot_list, ncol = 1)
+dev.off()
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -141,8 +201,7 @@ library(reshape2)
 library(RColorBrewer)
 
 # List your 6 file names
-file_list <- c("BLA_Period1_River.csv", "BLA_Period1_WWTP.csv", "BLA_Period2_River.csv", 
-               "BLA_Period2_WWTP.csv", "BLA_Period3_River.csv", "BLA_Period3_WWTP.csv")
+file_list <- c("NarG_Period1.csv", "NarG_Period1.csv", "NarG_Period2.csv")
 
 # Define a consistent pastel palette for the 5 categories
 category_colors <- c(
