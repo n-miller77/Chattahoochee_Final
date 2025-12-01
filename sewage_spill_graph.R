@@ -9,7 +9,8 @@ chattahoochee_coords <- read.table("chattahoochee.geo", header = TRUE)
 sample_site_coords_only <- sample_site_coords %>%
   select(lat, long)
 
-plot(chattahoochee_coords, asp=1, type="n", main="Sampling Sites", xlab="Longitude", ylab="Latitude")
+
+plot(chattahoochee_coords, asp=1, type="n", main="Sampling Sites with Sewage Spills", xlab="Longitude", ylab="Latitude")
 
 # Add a blue line to connect the sites and represent the river
 lines(chattahoochee_coords, col="light blue", lwd=3)
@@ -30,3 +31,4 @@ points(sewage_spill_data$Long, sewage_spill_data$Lat, col="red", pch=16, cex=1.5
 # Add legend
 legend("bottomright", legend = c("Sampling Sites", "Sewage Spill Sites"),
        col = c("blue", "red"), pch = c(16, 16), cex = 1.0)
+
