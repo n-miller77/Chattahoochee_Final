@@ -2,9 +2,9 @@
 library(dplyr)
 
 # Load in data
-sewage_spill_data <- read.csv("/storage/home/hcoda1/9/nmiller304/scratch/Spill_Stuff/Sewage_Spills_Report_Chattahoochee2_Basin_07.12.2018_to_08.22.2018.csv")
-sample_site_coords <- read.csv("/storage/home/hcoda1/9/nmiller304/scratch/Spill_Stuff/chattahoochee_river_sites.csv")
-chattahoochee_coords <- read.table("/storage/home/hcoda1/9/nmiller304/scratch/Spill_Stuff/chattahoochee.geo", header = TRUE)
+sewage_spill_data <- read.csv("Sewage_Spills_Report_Chattahoochee2_Basin_07.12.2018_to_08.22.2018.csv")
+sample_site_coords <- read.csv("chattahoochee_river_sites.csv")
+chattahoochee_coords <- read.table("chattahoochee.geo", header = TRUE)
 
 sample_site_coords_only <- sample_site_coords %>%
   select(lat, long)
