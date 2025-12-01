@@ -1,1 +1,113 @@
+library(ggplot2)
+library(dplyr)
+library(scales)
+library(Polychrome)
+library(readr)
+
+# === STEP 1: Define file list (3 periods) ===
+files <- c(
+  "Period1_classes.csv",
+  "Period2_classes.csv",
+  "Period3_classes.csv"
+)
+names(files) <- c("Period 1", "Period 2", "Period 3")
+
+cat("📂 Reading and processing datasets...\n")
+
+# === STEP 2: Read and preprocess ===
+all_data <- lapply(names(files), function(name) {
+  file <- files[name]
+  df <- read_csv(file, show_col_types = FALSE)
+  
+  colnames(df) <- trimws(colnames(df))
+  
+  df <- df %>%
+    mutate(
+      Location = as.character(Location),
+      Percent_Abundance = as.numeric(Percent_Abundance),
+      Class = as.character(Class),
+      Period = name
+    ) %>%
+    filter(!is.na(Class), Percent_Abundance > 0)
+  
+  # Combine same class values within each location
+  df <- df %>%
+    group_by(Period, Location, Class) %>%
+    summarise(Percent_Abundance = sum(Percent_Abundance, na.rm = TRUE), .groups = "drop")
+  
+  df
+})
+
+combined_df <- bind_rows(all_data)
+
+# === STEP 3: Specify your preferred location order here! ===
+location_order <- c(
+  "S3",
+  "S2",
+  "S1",
+  "CC_DOWN",
+  "CC_UP",
+  "SC_UP",
+  "RL_DOWN",
+  "RL_UP",
+  "DAM"
+)
+
+combined_df$Location <- factor(combined_df$Location, levels = location_order)
+
+# === STEP 3B: Custom labels to display on the plot ===
+# Change ONLY the labels on the right side:
+location_labels <- c(
+  "S3"       = "S3",
+  "S2"       = "S2",
+  "S1"       = "S1",
+  "CC_DOWN"  = "C_DOWN",
+  "CC_UP"    = "C_UP",
+  "SC_UP"    = "B_UP",
+  "RL_DOWN"  = "A_DOWN",
+  "RL_UP"    = "A_UP",
+  "DAM"      = "DAM"
+)
+
+# === STEP 4: Create pastel color palette ===
+all_classes <- unique(combined_df$Class)
+cat("🎨 Total unique classes across all periods:", length(all_classes), "\n")
+
+base_palette <- createPalette(length(all_classes), seedcolors = "#88CCEE")
+lighten_color <- function(color, factor = 0.5) {
+  rgb_col <- col2rgb(color) / 255
+  lightened <- rgb_col + (1 - rgb_col) * factor
+  rgb(lightened[1], lightened[2], lightened[3])
+}
+pastel_palette <- sapply(base_palette, lighten_color)
+names(pastel_palette) <- all_classes
+
+# === STEP 5: Plot ===
+p <- ggplot(combined_df, aes(x = Location, y = Percent_Abundance, fill = Class)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ Period, ncol = 1, scales = "fixed") +
+  scale_fill_manual(values = pastel_palette) +
+  coord_flip() +  
+  scale_x_discrete(labels = location_labels) +   # ★ NEW: custom displayed labels
+  scale_y_continuous(position = "right") +
+  labs(
+    title = "rMAG Abundance by Origin",
+    x = "Sample Location",
+    y = "Abundance (TAD80/GEQ)"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    axis.text.y = element_text(size = 10),
+    axis.text.x.right = element_text(size = 10),
+    strip.text = element_text(face = "bold", size = 11),
+    plot.title = element_text(hjust = 0.5),
+    legend.position = "bottom"
+  )
+
+# === STEP 6: Save ===
+output_file <- "MAG_Class_Distribution.pdf"
+cat("💾 Saving combined plot:", output_file, "\n")
+ggsave(output_file, plot = p, width = 10, height = 10)
+
+cat("✅ Plot saved with custom location order and custom display labels.\n")
 
