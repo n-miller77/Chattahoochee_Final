@@ -6,9 +6,9 @@ library(readr)
 
 # === STEP 1: Define file list (3 periods) ===
 files <- c(
-  "Period1_BLA.csv",
-  "Period2_BLA.csv",
-  "Period3_BLA.csv"
+  "ARG_PERIOD1_1207.csv",
+  "ARG_PERIOD2_1207.csv",
+  "ARG_PERIOD3_1207.csv"
 )
 names(files) <- c("Period 1", "Period 2", "Period 3")
 
