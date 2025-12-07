@@ -45,11 +45,11 @@ location_order <- c(
   "S3",
   "S2",
   "S1",
-  "CC_DOWN",
-  "CC_UP",
-  "SC_UP",
-  "RL_DOWN",
-  "RL_UP",
+  "C_DOWN",
+  "C_UP",
+  "B_UP",
+  "A_DOWN",
+  "A_UP",
   "DAM"
 )
 
@@ -61,11 +61,11 @@ location_labels <- c(
   "S3"       = "S3",
   "S2"       = "S2",
   "S1"       = "S1",
-  "CC_DOWN"  = "C_DOWN",
-  "CC_UP"    = "C_UP",
-  "SC_UP"    = "B_UP",
-  "RL_DOWN"  = "A_DOWN",
-  "RL_UP"    = "A_UP",
+  "C_DOWN"  = "C_DOWN",
+  "C_UP"    = "C_UP",
+  "B_UP"    = "B_UP",
+  "A_DOWN"  = "A_DOWN",
+  "A_UP"    = "A_UP",
   "DAM"      = "DAM"
 )
 
